@@ -35,6 +35,7 @@ module Fluent
 
     Fluent::Plugin.register_filter('kubernetes_metadata', self)
 
+    config_param :kubernetes_prefix, :string, default: kubernetes
     config_param :kubernetes_url, :string, default: nil
     config_param :cache_size, :integer, default: 1000
     config_param :cache_ttl, :integer, default: 60 * 60
@@ -294,7 +295,7 @@ module Fluent
           'docker' => {
             'container_id' => container_id
           },
-          'kubernetes' => get_metadata_for_record(match_data, container_id, create_time_from_record(es.first[1]), batch_miss_cache)
+          '#{kubernetes_prefix}' => get_metadata_for_record(match_data, container_id, create_time_from_record(es.first[1]), batch_miss_cache)
         }
       end
 
@@ -322,7 +323,7 @@ module Fluent
               'docker' => {
                 'container_id' => container_id
               },
-              'kubernetes' => get_metadata_for_record(match_data, container_id, create_time_from_record(record), batch_miss_cache)
+              '#{kubernetes_prefix}' => get_metadata_for_record(match_data, container_id, create_time_from_record(record), batch_miss_cache)
             }
 
             metadata
